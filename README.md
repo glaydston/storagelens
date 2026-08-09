@@ -9,7 +9,7 @@ itself, which is flagged in the UI and asks for a separate confirmation.
 
 | | |
 | --- | --- |
-| **Version** | 0.1.0 |
+| **Version** | 0.1.1 |
 | **Author** | Glaydston Veloso |
 | **Repository** | https://github.com/glaydston/storagelens |
 | **License** | MIT |

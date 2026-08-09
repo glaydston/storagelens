@@ -6,13 +6,13 @@ import Foundation
 /// Info.plist, so bumping it here is the only place a release version changes.
 enum AppInfo {
     static let name = "StorageLens"
-    static let version = "0.1.0"
+    static let version = "0.1.1"
     static let author = "Glaydston Veloso"
     static let repository = URL(string: "https://github.com/glaydston/storagelens")!
     static let license = "MIT"
 
     static var copyright: String { "© 2026 \(author) · \(license) licensed" }
 
-    /// "StorageLens 0.1.0 · Glaydston Veloso"
+    /// e.g. "StorageLens 1.2.3 · Ada Lovelace"
     static var summary: String { "\(name) \(version) · \(author)" }
 }
