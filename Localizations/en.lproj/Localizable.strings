@@ -1,0 +1,112 @@
+/* StorageLens — English (development language, and the fallback for any
+   locale without its own table). Keys are the English source strings. */
+
+/* Navigation and chrome */
+"Overview" = "Overview";
+"Biggest categories" = "Biggest categories";
+"Source" = "Source";
+"Category not scanned" = "Category not scanned";
+"Rescan" = "Rescan";
+"Stop" = "Stop";
+"About %@" = "About %@";
+"%@ on GitHub" = "%@ on GitHub";
+"Review disk usage and reclaim space from caches, logs and the Trash." = "Review disk usage and reclaim space from caches, logs and the Trash.";
+
+/* Volume card */
+"%@ available" = "%@ available";
+"%@ used of %@" = "%@ used of %@";
+"Other used" = "Other used";
+"Free" = "Free";
+"%@ — %@" = "%@ — %@";
+
+/* Summary tiles */
+"Found" = "Found";
+"Safe to clean" = "Safe to clean";
+"Selected" = "Selected";
+"caches and logs apps rebuild" = "caches and logs apps rebuild";
+"Select All Safe" = "Select All Safe";
+
+/* Scanning */
+"Scanning %lld of %lld…" = "Scanning %lld of %lld…";
+
+/* Category detail */
+"review" = "review";
+"Deleted permanently" = "Deleted permanently";
+"Select All" = "Select All";
+"Select None" = "Select None";
+"Reveal in Finder" = "Reveal in Finder";
+"Modified %@" = "Modified %@";
+"Nothing here" = "Nothing here";
+"%@ is empty or doesn't exist." = "%@ is empty or doesn't exist.";
+"Couldn't read this folder" = "Couldn't read this folder";
+"Grant Full Disk Access in System Settings, then rescan." = "Grant Full Disk Access in System Settings, then rescan.";
+
+/* Cleaning */
+"Clean" = "Clean";
+"Clean %@" = "Clean %@";
+"Cancel" = "Cancel";
+"Delete" = "Delete";
+"Move to Trash" = "Move to Trash";
+"%@ will be freed. Everything goes to the Trash, so you can put it back until you empty it." = "%@ will be freed. Everything goes to the Trash, so you can put it back until you empty it.";
+"%@ will be freed. Your selection includes items already in the Trash, which cannot be recovered once deleted." = "%@ will be freed. Your selection includes items already in the Trash, which cannot be recovered once deleted.";
+"Freed %@" = "Freed %@";
+"Couldn't remove %@: %@" = "Couldn't remove %@: %@";
+"unknown error" = "unknown error";
+
+/* Full Disk Access */
+"Some folders couldn't be read" = "Some folders couldn't be read";
+"Grant StorageLens Full Disk Access to measure protected locations like Mail and app containers." = "Grant StorageLens Full Disk Access to measure protected locations like Mail and app containers.";
+"Open Settings" = "Open Settings";
+
+/* Groups */
+"System" = "System";
+"Developer" = "Developer";
+"Package Managers" = "Package Managers";
+"Applications" = "Applications";
+"Needs Review" = "Needs Review";
+
+/* Category titles */
+"Trash" = "Trash";
+"Application Caches" = "Application Caches";
+"Application Logs" = "Application Logs";
+"Crash Reports" = "Crash Reports";
+"Xcode Derived Data" = "Xcode Derived Data";
+"Xcode Archives" = "Xcode Archives";
+"iOS Device Support" = "iOS Device Support";
+"Simulator Caches" = "Simulator Caches";
+"Swift Package Manager Cache" = "Swift Package Manager Cache";
+"Homebrew Cache" = "Homebrew Cache";
+"npm Cache" = "npm Cache";
+"Yarn Cache" = "Yarn Cache";
+"pnpm Store" = "pnpm Store";
+"pip Cache" = "pip Cache";
+"uv Cache" = "uv Cache";
+"Go Build Cache" = "Go Build Cache";
+"Cargo Registry Cache" = "Cargo Registry Cache";
+"Gradle Caches" = "Gradle Caches";
+"CocoaPods Cache" = "CocoaPods Cache";
+"Deno Cache" = "Deno Cache";
+"iOS Device Backups" = "iOS Device Backups";
+"Downloads" = "Downloads";
+"Mail Attachments" = "Mail Attachments";
+
+/* Category descriptions */
+"Everything in ~/.Trash. Emptying it here is permanent." = "Everything in ~/.Trash. Emptying it here is permanent.";
+"~/Library/Caches — rebuilt by apps on next launch." = "~/Library/Caches — rebuilt by apps on next launch.";
+"~/Library/Logs — diagnostic output from apps you've run." = "~/Library/Logs — diagnostic output from apps you've run.";
+"~/Library/Logs/DiagnosticReports — crash and spin logs." = "~/Library/Logs/DiagnosticReports — crash and spin logs.";
+"Build products and indexes. Xcode rebuilds them on demand." = "Build products and indexes. Xcode rebuilds them on demand.";
+"Shipped builds and their dSYMs — needed to symbolicate crashes." = "Shipped builds and their dSYMs — needed to symbolicate crashes.";
+"Symbols cached per connected device and OS version." = "Symbols cached per connected device and OS version.";
+"Cloned and cached package checkouts." = "Cloned and cached package checkouts.";
+"Downloaded bottles and source tarballs." = "Downloaded bottles and source tarballs.";
+"Sandboxed cache for %@." = "Sandboxed cache for %@.";
+"Full device backups made by Finder. Often tens of gigabytes." = "Full device backups made by Finder. Often tens of gigabytes.";
+"Your ~/Downloads folder, largest first. Nothing here is junk by default." = "Your ~/Downloads folder, largest first. Nothing here is junk by default.";
+"Attachments Mail saved to disk. Requires Full Disk Access." = "Attachments Mail saved to disk. Requires Full Disk Access.";
+
+/* Safety errors */
+"%@ is not inside a folder StorageLens is allowed to clean." = "%@ is not inside a folder StorageLens is allowed to clean.";
+"%@ is a cleanup folder itself; only its contents can be removed." = "%@ is a cleanup folder itself; only its contents can be removed.";
+"%@ is a protected system location." = "%@ is a protected system location.";
+"%@ is too close to the root of the disk to be removed." = "%@ is too close to the root of the disk to be removed.";

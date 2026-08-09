@@ -1,4 +1,4 @@
-.PHONY: build test app run install uninstall icon snapshots zip clean
+.PHONY: build test app run install uninstall icon snapshots dmg zip clean
 
 build:
 	swift build
@@ -27,9 +27,16 @@ icon:
 	swift Scripts/make-icon.swift
 
 # README screenshots, rendered from preview data rather than captured by hand.
-snapshots: build
-	./.build/debug/StorageLens --snapshot docs/overview-light.png
-	./.build/debug/StorageLens --snapshot docs/overview-dark.png --dark
+# Run from inside the bundle so localizations resolve through Bundle.main.
+snapshots: app
+	build/StorageLens.app/Contents/MacOS/StorageLens --snapshot docs/overview-light.png
+	build/StorageLens.app/Contents/MacOS/StorageLens --snapshot docs/overview-dark.png --dark
+	build/StorageLens.app/Contents/MacOS/StorageLens --snapshot docs/overview-pt-BR.png -AppleLanguages "(pt-BR)"
+	build/StorageLens.app/Contents/MacOS/StorageLens --snapshot docs/overview-es-ES.png -AppleLanguages "(es-ES)"
+
+# Drag-to-Applications installer — the artifact most people should download.
+dmg: app
+	./Scripts/make-dmg.sh
 
 # Release artifact: a zip that keeps the bundle's signature intact.
 zip: app

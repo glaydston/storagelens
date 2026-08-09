@@ -29,14 +29,14 @@ struct StorageLensApp: App {
         .defaultSize(width: 1080, height: 700)
         .commands {
             CommandGroup(replacing: .appInfo) {
-                Button("About \(AppInfo.name)") { showAboutPanel() }
+                Button(L("About %@", AppInfo.name)) { showAboutPanel() }
             }
             CommandGroup(after: .newItem) {
-                Button("Rescan") { model.rescan() }
+                Button(L("Rescan")) { model.rescan() }
                     .keyboardShortcut("r", modifiers: .command)
             }
             CommandGroup(replacing: .help) {
-                Button("\(AppInfo.name) on GitHub") {
+                Button(L("%@ on GitHub", AppInfo.name)) {
                     NSWorkspace.shared.open(AppInfo.repository)
                 }
             }
@@ -45,7 +45,7 @@ struct StorageLensApp: App {
 
     private func showAboutPanel() {
         let credits = NSMutableAttributedString(
-            string: "Review disk usage and reclaim space from caches, logs and the Trash.\n\n",
+            string: L("Review disk usage and reclaim space from caches, logs and the Trash.") + "\n\n",
             attributes: [.font: NSFont.systemFont(ofSize: 11)]
         )
         credits.append(NSAttributedString(

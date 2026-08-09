@@ -207,7 +207,7 @@ public enum CleanupCatalog {
             rules.append(CleanupRule(
                 id: "container-\(container.lastPathComponent)",
                 title: container.lastPathComponent,
-                detail: "Sandboxed cache for \(container.lastPathComponent).",
+                detail: L("Sandboxed cache for %@.", container.lastPathComponent),
                 group: .applications,
                 root: cache
             ))

@@ -1,0 +1,111 @@
+/* StorageLens — Español (España) */
+
+/* Navegación */
+"Overview" = "Resumen";
+"Biggest categories" = "Categorías más grandes";
+"Source" = "Código fuente";
+"Category not scanned" = "Categoría sin analizar";
+"Rescan" = "Volver a analizar";
+"Stop" = "Detener";
+"About %@" = "Acerca de %@";
+"%@ on GitHub" = "%@ en GitHub";
+"Review disk usage and reclaim space from caches, logs and the Trash." = "Revisa el uso del disco y recupera espacio de cachés, registros y la Papelera.";
+
+/* Volumen */
+"%@ available" = "%@ disponibles";
+"%@ used of %@" = "%@ usados de %@";
+"Other used" = "Otros usados";
+"Free" = "Libre";
+"%@ — %@" = "%@ — %@";
+
+/* Resumen */
+"Found" = "Encontrado";
+"Safe to clean" = "Seguro para limpiar";
+"Selected" = "Seleccionado";
+"caches and logs apps rebuild" = "cachés y registros que las apps regeneran";
+"Select All Safe" = "Seleccionar todo lo seguro";
+
+/* Análisis */
+"Scanning %lld of %lld…" = "Analizando %lld de %lld…";
+
+/* Detalle de categoría */
+"review" = "revisar";
+"Deleted permanently" = "Se elimina permanentemente";
+"Select All" = "Seleccionar todo";
+"Select None" = "Anular selección";
+"Reveal in Finder" = "Mostrar en el Finder";
+"Modified %@" = "Modificado %@";
+"Nothing here" = "Aquí no hay nada";
+"%@ is empty or doesn't exist." = "%@ está vacía o no existe.";
+"Couldn't read this folder" = "No se pudo leer esta carpeta";
+"Grant Full Disk Access in System Settings, then rescan." = "Concede Acceso Total al Disco en Ajustes del Sistema y vuelve a analizar.";
+
+/* Limpieza */
+"Clean" = "Limpiar";
+"Clean %@" = "Limpiar %@";
+"Cancel" = "Cancelar";
+"Delete" = "Eliminar";
+"Move to Trash" = "Mover a la Papelera";
+"%@ will be freed. Everything goes to the Trash, so you can put it back until you empty it." = "Se liberarán %@. Todo va a la Papelera, así que puedes recuperarlo hasta que la vacíes.";
+"%@ will be freed. Your selection includes items already in the Trash, which cannot be recovered once deleted." = "Se liberarán %@. Tu selección incluye ítems que ya están en la Papelera, que no se pueden recuperar una vez eliminados.";
+"Freed %@" = "Se liberaron %@";
+"Couldn't remove %@: %@" = "No se pudo eliminar %@: %@";
+"unknown error" = "error desconocido";
+
+/* Acceso Total al Disco */
+"Some folders couldn't be read" = "No se pudieron leer algunas carpetas";
+"Grant StorageLens Full Disk Access to measure protected locations like Mail and app containers." = "Concede Acceso Total al Disco a StorageLens para medir ubicaciones protegidas como Mail y los contenedores de apps.";
+"Open Settings" = "Abrir Ajustes";
+
+/* Grupos */
+"System" = "Sistema";
+"Developer" = "Desarrollo";
+"Package Managers" = "Gestores de paquetes";
+"Applications" = "Aplicaciones";
+"Needs Review" = "Requiere revisión";
+
+/* Categorías */
+"Trash" = "Papelera";
+"Application Caches" = "Cachés de aplicaciones";
+"Application Logs" = "Registros de aplicaciones";
+"Crash Reports" = "Informes de fallos";
+"Xcode Derived Data" = "Datos derivados de Xcode";
+"Xcode Archives" = "Archivos de Xcode";
+"iOS Device Support" = "Soporte de dispositivos iOS";
+"Simulator Caches" = "Cachés del simulador";
+"Swift Package Manager Cache" = "Caché de Swift Package Manager";
+"Homebrew Cache" = "Caché de Homebrew";
+"npm Cache" = "Caché de npm";
+"Yarn Cache" = "Caché de Yarn";
+"pnpm Store" = "Almacén de pnpm";
+"pip Cache" = "Caché de pip";
+"uv Cache" = "Caché de uv";
+"Go Build Cache" = "Caché de compilación de Go";
+"Cargo Registry Cache" = "Caché del registro de Cargo";
+"Gradle Caches" = "Cachés de Gradle";
+"CocoaPods Cache" = "Caché de CocoaPods";
+"Deno Cache" = "Caché de Deno";
+"iOS Device Backups" = "Copias de seguridad de dispositivos iOS";
+"Downloads" = "Descargas";
+"Mail Attachments" = "Adjuntos de Mail";
+
+/* Descripciones */
+"Everything in ~/.Trash. Emptying it here is permanent." = "Todo lo que hay en ~/.Trash. Vaciarla aquí es permanente.";
+"~/Library/Caches — rebuilt by apps on next launch." = "~/Library/Caches — las apps lo regeneran al abrirse.";
+"~/Library/Logs — diagnostic output from apps you've run." = "~/Library/Logs — información de diagnóstico de las apps que has usado.";
+"~/Library/Logs/DiagnosticReports — crash and spin logs." = "~/Library/Logs/DiagnosticReports — registros de fallos y bloqueos.";
+"Build products and indexes. Xcode rebuilds them on demand." = "Productos de compilación e índices. Xcode los regenera cuando hacen falta.";
+"Shipped builds and their dSYMs — needed to symbolicate crashes." = "Compilaciones publicadas y sus dSYM — necesarios para simbolizar fallos.";
+"Symbols cached per connected device and OS version." = "Símbolos guardados por dispositivo conectado y versión del sistema.";
+"Cloned and cached package checkouts." = "Clones y descargas de paquetes en caché.";
+"Downloaded bottles and source tarballs." = "Bottles y tarballs de código descargados.";
+"Sandboxed cache for %@." = "Caché en sandbox de %@.";
+"Full device backups made by Finder. Often tens of gigabytes." = "Copias completas de dispositivos hechas por el Finder. Suelen ocupar decenas de gigabytes.";
+"Your ~/Downloads folder, largest first. Nothing here is junk by default." = "Tu carpeta ~/Downloads, de mayor a menor. Aquí nada es basura por omisión.";
+"Attachments Mail saved to disk. Requires Full Disk Access." = "Adjuntos que Mail guardó en el disco. Requiere Acceso Total al Disco.";
+
+/* Errores de seguridad */
+"%@ is not inside a folder StorageLens is allowed to clean." = "%@ no está dentro de una carpeta que StorageLens pueda limpiar.";
+"%@ is a cleanup folder itself; only its contents can be removed." = "%@ es la propia carpeta de limpieza; solo se puede eliminar su contenido.";
+"%@ is a protected system location." = "%@ es una ubicación protegida del sistema.";
+"%@ is too close to the root of the disk to be removed." = "%@ está demasiado cerca de la raíz del disco para eliminarlo.";

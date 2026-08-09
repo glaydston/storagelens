@@ -9,13 +9,13 @@ public enum SafetyError: Error, LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .outsideAllowedRoots(let url):
-            "\(url.path) is not inside a folder StorageLens is allowed to clean."
+            L("%@ is not inside a folder StorageLens is allowed to clean.", url.path)
         case .isAllowedRoot(let url):
-            "\(url.path) is a cleanup folder itself; only its contents can be removed."
+            L("%@ is a cleanup folder itself; only its contents can be removed.", url.path)
         case .protectedPath(let url):
-            "\(url.path) is a protected system location."
+            L("%@ is a protected system location.", url.path)
         case .tooShallow(let url):
-            "\(url.path) is too close to the root of the disk to be removed."
+            L("%@ is too close to the root of the disk to be removed.", url.path)
         }
     }
 }

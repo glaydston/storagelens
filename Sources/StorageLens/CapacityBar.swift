@@ -32,7 +32,7 @@ struct CapacityBar: View {
                         .fill(segment.isTrack ? AnyShapeStyle(segment.color.opacity(0.55))
                                               : AnyShapeStyle(segment.color.gradient))
                         .frame(width: widths[index])
-                        .help("\(segment.label) — \(ByteFormat.string(segment.size))")
+                        .help(L("%@ — %@", segment.label, ByteFormat.string(segment.size)))
                 }
             }
         }

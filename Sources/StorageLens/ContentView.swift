@@ -19,7 +19,10 @@ struct ContentView: View {
                     if let scan = model.scan(id: id) {
                         CategoryDetailView(scan: scan)
                     } else {
-                        ContentUnavailableView("Category not scanned", systemImage: "questionmark.folder")
+                        ContentUnavailableView(
+                            L("Category not scanned"),
+                            systemImage: "questionmark.folder"
+                        )
                     }
                 case .overview, .none:
                     OverviewView()
@@ -29,7 +32,7 @@ struct ContentView: View {
         }
         .confirmationDialog(confirmTitle, isPresented: $confirmingClean) {
             Button(confirmAction, role: .destructive) { model.cleanSelected() }
-            Button("Cancel", role: .cancel) {}
+            Button(L("Cancel"), role: .cancel) {}
         } message: {
             Text(confirmMessage)
         }
@@ -39,41 +42,42 @@ struct ContentView: View {
     private var toolbar: some ToolbarContent {
         ToolbarItem(placement: .navigation) {
             if model.isScanning {
-                Button("Stop", systemImage: "stop.circle") { model.cancelScan() }
+                Button(L("Stop"), systemImage: "stop.circle") { model.cancelScan() }
             } else {
-                Button("Rescan", systemImage: "arrow.clockwise") { model.rescan() }
+                Button(L("Rescan"), systemImage: "arrow.clockwise") { model.rescan() }
             }
         }
         ToolbarItem(placement: .primaryAction) {
             Button {
                 confirmingClean = true
             } label: {
-                Label(
-                    model.selection.isEmpty
-                        ? "Clean"
-                        : "Clean \(ByteFormat.string(model.selectedSize))",
-                    systemImage: "trash"
-                )
+                Label(cleanButtonTitle, systemImage: "trash")
             }
             .disabled(model.selection.isEmpty)
         }
     }
 
+    private var cleanButtonTitle: String {
+        model.selection.isEmpty
+            ? L("Clean")
+            : L("Clean %@", ByteFormat.string(model.selectedSize))
+    }
+
     private var confirmTitle: String {
         model.selectionIncludesPermanent
-            ? "Delete \(model.selection.count) items?"
-            : "Move \(model.selection.count) items to the Trash?"
+            ? LPlural("Delete %lld items?", model.selection.count)
+            : LPlural("Move %lld items to the Trash?", model.selection.count)
     }
 
     private var confirmAction: String {
-        model.selectionIncludesPermanent ? "Delete" : "Move to Trash"
+        model.selectionIncludesPermanent ? L("Delete") : L("Move to Trash")
     }
 
     private var confirmMessage: String {
         let size = ByteFormat.string(model.selectedSize)
         return model.selectionIncludesPermanent
-            ? "\(size) will be freed. Your selection includes items already in the Trash, which cannot be recovered once deleted."
-            : "\(size) will be freed. Everything goes to the Trash, so you can put it back until you empty it."
+            ? L("%@ will be freed. Your selection includes items already in the Trash, which cannot be recovered once deleted.", size)
+            : L("%@ will be freed. Everything goes to the Trash, so you can put it back until you empty it.", size)
     }
 }
 
@@ -84,13 +88,13 @@ struct SidebarView: View {
         @Bindable var model = model
 
         List(selection: $model.route) {
-            Label("Overview", systemImage: "chart.pie")
+            Label(L("Overview"), systemImage: "chart.pie")
                 .tag(ScanModel.Route.overview)
 
             ForEach(CleanupRule.Group.allCases, id: \.self) { group in
                 let scans = model.scans(in: group)
                 if !scans.isEmpty {
-                    Section(group.rawValue) {
+                    Section(L(group.rawValue)) {
                         ForEach(scans) { scan in
                             SidebarRow(scan: scan, selectedCount: selectedCount(in: scan))
                                 .tag(ScanModel.Route.category(scan.rule.id))
@@ -104,7 +108,7 @@ struct SidebarView: View {
             if model.isScanning {
                 VStack(alignment: .leading, spacing: 4) {
                     ProgressView(value: model.progress)
-                    Text("Scanning \(model.scannedCount) of \(model.ruleCount)…")
+                    Text(L("Scanning %lld of %lld…", model.scannedCount, model.ruleCount))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -128,10 +132,10 @@ struct SidebarRow: View {
             Image(systemName: icon)
                 .foregroundStyle(CategoryPalette.color(for: scan.rule.group))
             VStack(alignment: .leading, spacing: 1) {
-                Text(scan.rule.title)
+                Text(L(scan.rule.title))
                     .lineLimit(1)
                 if selectedCount > 0 {
-                    Text("\(selectedCount) selected")
+                    Text(LPlural("%lld selected", selectedCount))
                         .font(.caption2)
                         .foregroundStyle(.tint)
                 }

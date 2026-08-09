@@ -19,27 +19,35 @@ jobs:
       - name: Test
         run: swift test
 
-      - name: Build app bundle
-        run: make zip
+      - name: Build installer and archive
+        run: make dmg zip
 
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
-          files: build/StorageLens.zip
+          files: |
+            build/StorageLens-*.dmg
+            build/StorageLens.zip
           generate_release_notes: true
           body: |
             ## Install
 
-            1. Download `StorageLens.zip` below and unzip it.
-            2. Move `StorageLens.app` to `/Applications`.
-            3. The build is signed ad-hoc, not notarized, so Gatekeeper blocks
-               the first launch. Right-click the app → **Open** → **Open**, or run:
+            Download **`StorageLens-<version>.dmg`**, open it, and drag
+            StorageLens onto the Applications shortcut. (`StorageLens.zip` is
+            the same app without the installer window, if you prefer it.)
 
-               ```sh
-               xattr -dr com.apple.quarantine /Applications/StorageLens.app
-               ```
+            **First launch:** this build is signed ad-hoc rather than notarized,
+            so Gatekeeper blocks a plain double-click. Right-click the app in
+            Applications → **Open** → **Open**. Once only. Command-line
+            equivalent:
 
-            4. Optional, for Mail and some app containers: System Settings →
-               Privacy & Security → Full Disk Access → add StorageLens.
+            ```sh
+            xattr -dr com.apple.quarantine /Applications/StorageLens.app
+            ```
 
-            Requires macOS 14 or later.
+            **Optional:** to measure protected folders (Mail, some app
+            containers), add StorageLens under System Settings → Privacy &
+            Security → Full Disk Access.
+
+            Requires macOS 14 or later. Available in English, Português (Brasil)
+            and Español; it follows your system language.

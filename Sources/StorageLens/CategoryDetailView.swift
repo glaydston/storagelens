@@ -12,26 +12,26 @@ struct CategoryDetailView: View {
             Divider()
             if scan.accessDenied {
                 ContentUnavailableView(
-                    "Couldn't read this folder",
+                    L("Couldn't read this folder"),
                     systemImage: "lock",
-                    description: Text("Grant Full Disk Access in System Settings, then rescan.")
+                    description: Text(L("Grant Full Disk Access in System Settings, then rescan."))
                 )
             } else if scan.items.isEmpty {
                 ContentUnavailableView(
-                    "Nothing here",
+                    L("Nothing here"),
                     systemImage: "sparkles",
-                    description: Text("\(scan.rule.root.path) is empty or doesn't exist.")
+                    description: Text(L("%@ is empty or doesn't exist.", scan.rule.root.path))
                 )
             } else {
                 itemList
             }
         }
-        .navigationTitle(scan.rule.title)
+        .navigationTitle(L(scan.rule.title))
     }
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(scan.rule.detail)
+            Text(L(scan.rule.detail))
                 .foregroundStyle(.secondary)
             HStack(spacing: 12) {
                 Text(scan.rule.root.path)
@@ -41,17 +41,22 @@ struct CategoryDetailView: View {
                     .truncationMode(.middle)
                 Spacer()
                 if scan.rule.removal == .permanent {
-                    Label("Deleted permanently", systemImage: "exclamationmark.triangle")
+                    Label(L("Deleted permanently"), systemImage: "exclamationmark.triangle")
                         .font(.caption)
                         .foregroundStyle(.orange)
                 }
-                Text("\(scan.items.count) items · \(ByteFormat.string(scan.totalSize))")
+                Text(LPlural("%lld items", scan.items.count))
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
+                Text("·")
+                    .foregroundStyle(.secondary)
+                Text(ByteFormat.string(scan.totalSize))
                     .font(.caption.monospacedDigit())
                     .foregroundStyle(.secondary)
             }
             HStack {
-                Button("Select All") { model.selectAll(in: scan) }
-                Button("Select None") { model.deselectAll(in: scan) }
+                Button(L("Select All")) { model.selectAll(in: scan) }
+                Button(L("Select None")) { model.deselectAll(in: scan) }
                 Spacer()
             }
             .controlSize(.small)
@@ -87,7 +92,7 @@ struct ItemRow: View {
             VStack(alignment: .leading, spacing: 1) {
                 Text(item.name).lineLimit(1)
                 if let modified = item.modified {
-                    Text("Modified \(modified.formatted(.relative(presentation: .named)))")
+                    Text(L("Modified %@", modified.formatted(.relative(presentation: .named))))
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                 }
@@ -105,7 +110,7 @@ struct ItemRow: View {
                 Image(systemName: "arrow.up.forward.app")
             }
             .buttonStyle(.borderless)
-            .help("Reveal in Finder")
+            .help(L("Reveal in Finder"))
         }
         .padding(.vertical, 2)
     }

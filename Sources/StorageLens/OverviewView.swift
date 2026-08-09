@@ -7,7 +7,7 @@ struct OverviewView: View {
         ScrollView {
             OverviewContent()
         }
-        .navigationTitle("Overview")
+        .navigationTitle(L("Overview"))
     }
 }
 
@@ -33,7 +33,7 @@ struct OverviewContent: View {
                 summary
 
                 if !model.nonEmptyScans.isEmpty {
-                    Text("Biggest categories")
+                    Text(L("Biggest categories"))
                         .font(.headline)
                     ForEach(model.nonEmptyScans.prefix(12)) { scan in
                         CategoryBar(scan: scan, maximum: model.nonEmptyScans.first?.totalSize ?? 1)
@@ -45,7 +45,7 @@ struct OverviewContent: View {
                 HStack(spacing: 6) {
                     Text(AppInfo.summary)
                     Text("·")
-                    Text("Source")
+                    Text(L("Source"))
                         .underline()
                         .onTapGesture { NSWorkspace.shared.open(AppInfo.repository) }
                 }
@@ -64,7 +64,7 @@ struct OverviewContent: View {
             guard size > 0 else { return nil }
             return CapacitySegment(
                 id: group.rawValue,
-                label: group.rawValue,
+                label: L(group.rawValue),
                 size: size,
                 color: CategoryPalette.color(for: group)
             )
@@ -73,13 +73,13 @@ struct OverviewContent: View {
         let categorized = segments.reduce(Int64(0)) { $0 + $1.size }
         segments.append(CapacitySegment(
             id: "other",
-            label: "Other used",
+            label: L("Other used"),
             size: max(0, volume.usedCapacity - categorized),
             color: CategoryPalette.otherUsed
         ))
         segments.append(CapacitySegment(
             id: "free",
-            label: "Free",
+            label: L("Free"),
             size: volume.availableCapacity,
             color: CategoryPalette.free,
             isTrack: true
@@ -90,22 +90,22 @@ struct OverviewContent: View {
     private var summary: some View {
         HStack(spacing: 16) {
             StatTile(
-                title: "Found",
+                title: L("Found"),
                 value: ByteFormat.string(model.scannedTotal),
-                caption: "across \(model.nonEmptyScans.count) categories"
+                caption: LPlural("across %lld categories", model.nonEmptyScans.count)
             )
             StatTile(
-                title: "Safe to clean",
+                title: L("Safe to clean"),
                 value: ByteFormat.string(model.reclaimableTotal),
-                caption: "caches and logs apps rebuild"
+                caption: L("caches and logs apps rebuild")
             )
             StatTile(
-                title: "Selected",
+                title: L("Selected"),
                 value: ByteFormat.string(model.selectedSize),
-                caption: "\(model.selection.count) items"
+                caption: LPlural("%lld items", model.selection.count)
             )
             Spacer()
-            Button("Select All Safe") { model.selectAllSafe() }
+            Button(L("Select All Safe")) { model.selectAllSafe() }
                 .disabled(model.reclaimableTotal == 0)
         }
     }
@@ -120,13 +120,13 @@ struct VolumeCard: View {
             HStack(alignment: .firstTextBaseline) {
                 Text(volume.name).font(.title2.weight(.semibold))
                 Spacer()
-                Text("\(ByteFormat.string(volume.availableCapacity)) available")
+                Text(L("%@ available", ByteFormat.string(volume.availableCapacity)))
                     .foregroundStyle(.secondary)
             }
 
             CapacityBar(segments: segments)
 
-            Text("\(ByteFormat.string(volume.usedCapacity)) used of \(ByteFormat.string(volume.totalCapacity))")
+            Text(L("%@ used of %@", ByteFormat.string(volume.usedCapacity), ByteFormat.string(volume.totalCapacity)))
                 .font(.callout)
                 .foregroundStyle(.secondary)
 
@@ -159,9 +159,9 @@ struct CategoryBar: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
-                Text(scan.rule.title)
+                Text(L(scan.rule.title))
                 if scan.rule.risk == .review {
-                    Text("review")
+                    Text(L("review"))
                         .font(.caption2)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 1)
@@ -190,19 +190,23 @@ struct CleanReportCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Label(
-                "Freed \(ByteFormat.string(report.reclaimed)) from \(report.succeeded.count) items",
+                L("Freed %@", ByteFormat.string(report.reclaimed)),
                 systemImage: "checkmark.circle"
             )
             .font(.headline)
             .foregroundStyle(.green)
 
+            Text(LPlural("%lld items removed", report.succeeded.count))
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
             ForEach(report.failed.prefix(5)) { outcome in
-                Text("Couldn't remove \(outcome.item.name): \(outcome.error ?? "unknown error")")
+                Text(L("Couldn't remove %@: %@", outcome.item.name, outcome.error ?? L("unknown error")))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
             if report.failed.count > 5 {
-                Text("…and \(report.failed.count - 5) more failures")
+                Text(LPlural("…and %lld more failures", report.failed.count - 5))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -220,13 +224,13 @@ struct FullDiskAccessBanner: View {
                 .font(.title2)
                 .foregroundStyle(.orange)
             VStack(alignment: .leading, spacing: 2) {
-                Text("Some folders couldn't be read").font(.headline)
-                Text("Grant StorageLens Full Disk Access to measure protected locations like Mail and app containers.")
+                Text(L("Some folders couldn't be read")).font(.headline)
+                Text(L("Grant StorageLens Full Disk Access to measure protected locations like Mail and app containers."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
             Spacer()
-            Button("Open Settings") {
+            Button(L("Open Settings")) {
                 let url = URL(
                     string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"
                 )!

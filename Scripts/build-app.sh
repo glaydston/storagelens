@@ -33,6 +33,13 @@ mkdir -p "$APP_DIR/Contents/MacOS" "$APP_DIR/Contents/Resources"
 cp "$BUILD_DIR/$APP_NAME" "$APP_DIR/Contents/MacOS/$APP_NAME"
 printf 'APPL????' > "$APP_DIR/Contents/PkgInfo"
 
+# Localizations live as .lproj folders in Contents/Resources, so NSLocalizedString
+# finds them through Bundle.main. Keys are the English source strings, so any
+# locale without a table here falls back to en-US.
+for lproj in "$ROOT"/Localizations/*.lproj; do
+  [[ -d "$lproj" ]] && cp -R "$lproj" "$APP_DIR/Contents/Resources/"
+done
+
 if [[ -f "$ROOT/Resources/AppIcon.icns" ]]; then
   cp "$ROOT/Resources/AppIcon.icns" "$APP_DIR/Contents/Resources/AppIcon.icns"
   ICON_ENTRY='<key>CFBundleIconFile</key><string>AppIcon</string>'
@@ -53,6 +60,9 @@ cat > "$APP_DIR/Contents/Info.plist" <<PLIST
   <key>CFBundleShortVersionString</key><string>$VERSION</string>
   <key>CFBundleVersion</key><string>$VERSION</string>
   <key>LSMinimumSystemVersion</key><string>$MIN_MACOS</string>
+  <key>CFBundleDevelopmentRegion</key><string>en_US</string>
+  <key>CFBundleLocalizations</key>
+  <array><string>en</string><string>pt-BR</string><string>es-ES</string></array>
   <key>LSApplicationCategoryType</key><string>public.app-category.utilities</string>
   <key>NSHumanReadableCopyright</key><string>$COPYRIGHT</string>
   <key>NSHighResolutionCapable</key><true/>

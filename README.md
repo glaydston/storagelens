@@ -14,6 +14,7 @@ itself, which is flagged in the UI and asks for a separate confirmation.
 | **Repository** | https://github.com/glaydston/storagelens |
 | **License** | MIT |
 | **Requires** | macOS 14 (Sonoma) or later, Apple silicon or Intel |
+| **Languages** | English, Português (Brasil), Español — follows your system language |
 
 ---
 
@@ -32,11 +33,13 @@ named in the legend — color is never the only cue.
 ### For anyone (no developer tools needed)
 
 1. Go to the [Releases page](https://github.com/glaydston/storagelens/releases)
-   and download `StorageLens.zip` from the newest release.
-2. Unzip it and drag `StorageLens.app` into your **Applications** folder.
+   and download **`StorageLens-<version>.dmg`** from the newest release.
+2. Open it and drag **StorageLens** onto the **Applications** shortcut in the
+   window. That's the install.
 3. **First launch:** the app is signed ad-hoc rather than notarized, so
-   Gatekeeper refuses to open it by double-click. Right-click the app →
-   **Open** → **Open**. You only do this once. The command-line equivalent:
+   Gatekeeper refuses to open it by double-click. Right-click the app in
+   Applications → **Open** → **Open**. You only do this once. The command-line
+   equivalent:
 
    ```sh
    xattr -dr com.apple.quarantine /Applications/StorageLens.app
@@ -44,6 +47,9 @@ named in the legend — color is never the only cue.
 
 4. Optional: grant **Full Disk Access** (see below) so protected folders can be
    measured too.
+
+The DMG carries a short first-launch note in all three languages. A plain
+`StorageLens.zip` is attached to each release too, for anyone who prefers it.
 
 After that it behaves like any other app — Launchpad, Spotlight, Dock.
 
@@ -140,6 +146,7 @@ make app       # assembles build/StorageLens.app
 make run       # build + launch
 make install   # build + copy to /Applications
 make zip       # build/StorageLens.zip, the release artifact
+make dmg       # build/StorageLens-<version>.dmg, the installer
 make icon      # regenerates Resources/AppIcon.icns
 make snapshots # regenerates the README screenshots from preview data
 ```
@@ -158,12 +165,35 @@ Sources/StorageLensKit/   scanning, rules, safety, removal — no UI, fully test
   Cleaner.swift           removal, behind an injectable FileOperations
 Sources/StorageLens/      SwiftUI app: AppInfo, ScanModel, views
 Tests/StorageLensKitTests/
+Localizations/            en / pt-BR / es-ES .lproj tables
 Scripts/build-app.sh      binary -> .app bundle -> ad-hoc signature
+Scripts/make-dmg.sh       .app -> drag-to-Applications installer
 Scripts/make-icon.swift   regenerates Resources/AppIcon.icns
 ```
 
 The logic lives in a library target so it can be tested without launching a UI;
 the executable target is only the app shell and views.
+
+### Localization
+
+The app ships English, `pt-BR` and `es-ES` as `.lproj` folders under
+`Localizations/`, copied into `Contents/Resources` by the bundle script and
+resolved through `Bundle.main`.
+
+Keys **are** the English source strings, so a missing translation falls back to
+en-US on its own — `NSLocalizedString` returns the key it was given. Views call
+`L("…")` / `LPlural("…", count)` rather than relying on SwiftUI's implicit
+lookup, so strings built from variables (category titles, sizes, counts)
+localize the same way literals do. Counts go through `Localizable.stringsdict`,
+which is why "0 item" is correct in pt-BR and "0 ítems" in es-ES.
+
+To add a language: copy `Localizations/en.lproj` to `<code>.lproj`, translate
+the values, and add the code to `CFBundleLocalizations` in
+`Scripts/build-app.sh`. To check it, render the Overview in that locale:
+
+```sh
+build/StorageLens.app/Contents/MacOS/StorageLens --snapshot out.png -AppleLanguages "(pt-BR)"
+```
 
 ### Adding a category
 
@@ -187,8 +217,8 @@ git tag v0.1.0
 git push origin v0.1.0
 ```
 
-The release notes include install instructions, and the artifact keeps its code
-signature because `make zip` uses `ditto` rather than `zip`.
+Each release carries the DMG installer and a zip. Both keep the bundle's code
+signature — `make dmg` and `make zip` use `ditto`/`hdiutil` rather than `zip`.
 
 Two things to decide before other people can actually use it:
 
