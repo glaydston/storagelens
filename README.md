@@ -76,6 +76,14 @@ while it works, and categories fill in as their sizes land.
    was last modified, and a button to reveal it in Finder.
 4. The toolbar button on the right shows how much your selection would free.
    Click it, confirm, and the items go to the Trash.
+5. **Empty the Trash to actually get the space back.** Until you do, those
+   files still occupy the disk. After a clean the app says so and gives you
+   **Open Trash** (opens it in Finder) and **Review Trash** (opens the Trash
+   category here, where you can delete permanently). ⇧⌘T opens the Trash any
+   time, and every category has an **Open in Finder** button.
+
+The app refreshes itself after a clean — cleaned rows disappear, the volume bar
+re-reads, and the Trash category re-scans. No manual rescan needed.
 
 Nothing is ever removed without a selection and a confirmation. There is no
 auto-clean and no background agent.

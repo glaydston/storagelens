@@ -77,7 +77,7 @@ struct ContentView: View {
         let size = ByteFormat.string(model.selectedSize)
         return model.selectionIncludesPermanent
             ? L("%@ will be freed. Your selection includes items already in the Trash, which cannot be recovered once deleted.", size)
-            : L("%@ will be freed. Everything goes to the Trash, so you can put it back until you empty it.", size)
+            : L("%@ will move to the Trash. The space is reclaimed when you empty it, and you can put items back until then.", size)
     }
 }
 

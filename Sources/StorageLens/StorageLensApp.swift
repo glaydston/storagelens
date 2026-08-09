@@ -34,6 +34,8 @@ struct StorageLensApp: App {
             CommandGroup(after: .newItem) {
                 Button(L("Rescan")) { model.rescan() }
                     .keyboardShortcut("r", modifiers: .command)
+                Button(L("Open Trash")) { model.revealTrash() }
+                    .keyboardShortcut("t", modifiers: [.command, .shift])
             }
             CommandGroup(replacing: .help) {
                 Button(L("%@ on GitHub", AppInfo.name)) {

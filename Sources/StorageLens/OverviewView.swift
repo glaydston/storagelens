@@ -185,20 +185,43 @@ struct CategoryBar: View {
 }
 
 struct CleanReportCard: View {
+    @Environment(ScanModel.self) private var model
     let report: CleanupReport
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Label(
-                L("Freed %@", ByteFormat.string(report.reclaimed)),
-                systemImage: "checkmark.circle"
-            )
-            .font(.headline)
-            .foregroundStyle(.green)
+    /// Trashed and deleted are reported separately on purpose: only the deleted
+    /// bytes are gone. Trashed ones still occupy the disk until the Trash is
+    /// emptied, and saying "freed" for those would be a lie the volume gauge
+    /// immediately contradicts.
+    private var trashed: [CleanupOutcome] { report.succeeded.filter { $0.removal == .trash } }
+    private var deleted: [CleanupOutcome] { report.succeeded.filter { $0.removal == .permanent } }
 
-            Text(LPlural("%lld items removed", report.succeeded.count))
-                .font(.caption)
-                .foregroundStyle(.secondary)
+    private var trashedSize: Int64 { trashed.reduce(0) { $0 + $1.reclaimed } }
+    private var deletedSize: Int64 { deleted.reduce(0) { $0 + $1.reclaimed } }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            if !trashed.isEmpty {
+                VStack(alignment: .leading, spacing: 4) {
+                    Label(
+                        L("Moved %@ to the Trash", ByteFormat.string(trashedSize)),
+                        systemImage: "trash"
+                    )
+                    .font(.headline)
+
+                    Text(L("Empty the Trash to reclaim this space."))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            if !deleted.isEmpty {
+                Label(
+                    L("Freed %@", ByteFormat.string(deletedSize)),
+                    systemImage: "checkmark.circle"
+                )
+                .font(.headline)
+                .foregroundStyle(.green)
+            }
 
             ForEach(report.failed.prefix(5)) { outcome in
                 Text(L("Couldn't remove %@: %@", outcome.item.name, outcome.error ?? L("unknown error")))
@@ -210,10 +233,26 @@ struct CleanReportCard: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+
+            if !trashed.isEmpty {
+                HStack(spacing: 8) {
+                    Button(L("Open Trash")) { model.revealTrash() }
+                        .buttonStyle(.borderedProminent)
+                    if model.scan(id: ScanModel.trashRuleID) != nil {
+                        Button(L("Review Trash")) {
+                            model.route = .category(ScanModel.trashRuleID)
+                        }
+                    }
+                }
+                .controlSize(.small)
+            }
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.green.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
+        .background(
+            (trashed.isEmpty ? Color.green : Color.accentColor).opacity(0.1),
+            in: RoundedRectangle(cornerRadius: 12)
+        )
     }
 }
 

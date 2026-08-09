@@ -1,3 +1,4 @@
+import AppKit
 import Foundation
 import Observation
 import StorageLensKit
@@ -121,6 +122,20 @@ final class ScanModel {
         }
         model.ruleCount = model.scans.count
         model.scannedCount = model.scans.count
+
+        if let trash = model.scans.first(where: { $0.rule.id == trashRuleID }),
+           let item = trash.items.first {
+            model.lastReport = CleanupReport(outcomes: [
+                CleanupOutcome(item: item, removal: .trash, error: nil),
+                CleanupOutcome(
+                    item: ScannedItem(
+                        url: trash.rule.root.appendingPathComponent("old"),
+                        name: "old", size: 2_100_000_000, modified: nil, isDirectory: true
+                    ),
+                    removal: .trash, error: nil
+                ),
+            ])
+        }
         return model
     }
 
@@ -210,5 +225,41 @@ final class ScanModel {
         }
         selection.subtract(removed)
         volume = try? VolumeInfo.current()
+
+        // Whatever was trashed just landed in the Trash, so that category is now
+        // stale — and it's the one the user is about to look at.
+        refreshTrash()
+    }
+
+    /// The Trash rule's id, so the UI can route to it after a clean.
+    static let trashRuleID = "trash"
+
+    var trashURL: URL {
+        URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent(".Trash")
+    }
+
+    /// Opens the Trash in Finder — where the space actually gets reclaimed.
+    func revealTrash() {
+        NSWorkspace.shared.open(trashURL)
+    }
+
+    func reveal(_ url: URL) {
+        NSWorkspace.shared.open(url)
+    }
+
+    private func refreshTrash() {
+        guard let rule = rules.first(where: { $0.id == Self.trashRuleID }) else { return }
+        Task { [scanner] in
+            let result = await scanner.scan(rule)
+            self.replace(result)
+        }
+    }
+
+    private func replace(_ scan: CategoryScan) {
+        if let index = scans.firstIndex(where: { $0.rule.id == scan.rule.id }) {
+            scans[index] = scan
+        } else {
+            scans.append(scan)
+        }
     }
 }

@@ -34,6 +34,7 @@
 "Select All" = "Seleccionar todo";
 "Select None" = "Anular selección";
 "Reveal in Finder" = "Mostrar en el Finder";
+"Open in Finder" = "Abrir en el Finder";
 "Modified %@" = "Modificado %@";
 "Nothing here" = "Aquí no hay nada";
 "%@ is empty or doesn't exist." = "%@ está vacía o no existe.";
@@ -46,9 +47,13 @@
 "Cancel" = "Cancelar";
 "Delete" = "Eliminar";
 "Move to Trash" = "Mover a la Papelera";
-"%@ will be freed. Everything goes to the Trash, so you can put it back until you empty it." = "Se liberarán %@. Todo va a la Papelera, así que puedes recuperarlo hasta que la vacíes.";
+"%@ will move to the Trash. The space is reclaimed when you empty it, and you can put items back until then." = "Se moverán %@ a la Papelera. El espacio se recupera al vaciarla, y hasta entonces puedes restaurar los ítems.";
 "%@ will be freed. Your selection includes items already in the Trash, which cannot be recovered once deleted." = "Se liberarán %@. Tu selección incluye ítems que ya están en la Papelera, que no se pueden recuperar una vez eliminados.";
 "Freed %@" = "Se liberaron %@";
+"Moved %@ to the Trash" = "Se movieron %@ a la Papelera";
+"Empty the Trash to reclaim this space." = "Vacía la Papelera para recuperar este espacio.";
+"Open Trash" = "Abrir la Papelera";
+"Review Trash" = "Revisar la Papelera";
 "Couldn't remove %@: %@" = "No se pudo eliminar %@: %@";
 "unknown error" = "error desconocido";
 

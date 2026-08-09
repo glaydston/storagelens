@@ -58,6 +58,8 @@ struct CategoryDetailView: View {
                 Button(L("Select All")) { model.selectAll(in: scan) }
                 Button(L("Select None")) { model.deselectAll(in: scan) }
                 Spacer()
+                Button(L("Open in Finder")) { model.reveal(scan.rule.root) }
+                    .disabled(!FileManager.default.fileExists(atPath: scan.rule.root.path))
             }
             .controlSize(.small)
         }

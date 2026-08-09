@@ -26,6 +26,12 @@ public struct CleanupOutcome: Sendable, Identifiable {
     public let removal: CleanupRule.Removal
     public let error: String?
 
+    public init(item: ScannedItem, removal: CleanupRule.Removal, error: String?) {
+        self.item = item
+        self.removal = removal
+        self.error = error
+    }
+
     public var succeeded: Bool { error == nil }
     public var reclaimed: Int64 { succeeded ? item.size : 0 }
 }

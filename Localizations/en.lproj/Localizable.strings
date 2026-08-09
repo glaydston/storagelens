@@ -35,6 +35,7 @@
 "Select All" = "Select All";
 "Select None" = "Select None";
 "Reveal in Finder" = "Reveal in Finder";
+"Open in Finder" = "Open in Finder";
 "Modified %@" = "Modified %@";
 "Nothing here" = "Nothing here";
 "%@ is empty or doesn't exist." = "%@ is empty or doesn't exist.";
@@ -47,9 +48,13 @@
 "Cancel" = "Cancel";
 "Delete" = "Delete";
 "Move to Trash" = "Move to Trash";
-"%@ will be freed. Everything goes to the Trash, so you can put it back until you empty it." = "%@ will be freed. Everything goes to the Trash, so you can put it back until you empty it.";
+"%@ will move to the Trash. The space is reclaimed when you empty it, and you can put items back until then." = "%@ will move to the Trash. The space is reclaimed when you empty it, and you can put items back until then.";
 "%@ will be freed. Your selection includes items already in the Trash, which cannot be recovered once deleted." = "%@ will be freed. Your selection includes items already in the Trash, which cannot be recovered once deleted.";
 "Freed %@" = "Freed %@";
+"Moved %@ to the Trash" = "Moved %@ to the Trash";
+"Empty the Trash to reclaim this space." = "Empty the Trash to reclaim this space.";
+"Open Trash" = "Open Trash";
+"Review Trash" = "Review Trash";
 "Couldn't remove %@: %@" = "Couldn't remove %@: %@";
 "unknown error" = "unknown error";
 

@@ -8,7 +8,7 @@ enum Snapshot {
     static func render(to url: URL, dark: Bool) {
         let view = OverviewContent()
             .environment(ScanModel.preview())
-            .frame(width: 900, height: 720)
+            .frame(width: 900, height: 880)
             .background(Color(nsColor: .windowBackgroundColor))
             .environment(\.colorScheme, dark ? .dark : .light)
 
