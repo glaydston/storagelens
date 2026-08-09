@@ -53,10 +53,6 @@ The DMG carries a short first-launch note in all three languages. A plain
 
 After that it behaves like any other app — Launchpad, Spotlight, Dock.
 
-> Publishing a release requires the repository to be reachable by whoever you
-> are sharing with. While it stays private, only you can download from
-> Releases; see [Publishing](#publishing) for the options.
-
 ### For developers
 
 ```sh
@@ -220,16 +216,12 @@ git push origin v0.1.0
 Each release carries the DMG installer and a zip. Both keep the bundle's code
 signature — `make dmg` and `make zip` use `ditto`/`hdiutil` rather than `zip`.
 
-Two things to decide before other people can actually use it:
-
-- **Visibility.** The repository is private, so only you can reach the Releases
-  page. Make it public with `gh repo edit --visibility public` (or share the
-  built app directly).
-- **Signing.** Releases are ad-hoc signed, which means every downloader has to
-  clear the quarantine flag by hand. Signing with a Developer ID certificate and
-  notarizing with `xcrun notarytool` removes that step; it needs a paid Apple
-  Developer account, and the certificate and app-specific password stored as
-  repository secrets.
+One rough edge remains for downloaders: releases are **ad-hoc signed, not
+notarized**, so Gatekeeper makes every new user right-click → Open the first
+time. Removing that step means signing with a Developer ID certificate and
+notarizing with `xcrun notarytool` in the release job — it needs a paid Apple
+Developer account, with the certificate and an app-specific password stored as
+repository secrets.
 
 ## Prior art
 
