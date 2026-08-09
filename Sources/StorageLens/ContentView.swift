@@ -126,7 +126,7 @@ struct SidebarRow: View {
     var body: some View {
         HStack {
             Image(systemName: icon)
-                .foregroundStyle(scan.rule.risk == .review ? .orange : .accentColor)
+                .foregroundStyle(CategoryPalette.color(for: scan.rule.group))
             VStack(alignment: .leading, spacing: 1) {
                 Text(scan.rule.title)
                     .lineLimit(1)

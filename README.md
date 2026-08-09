@@ -17,6 +17,16 @@ itself, which is flagged in the UI and asks for a separate confirmation.
 
 ---
 
+![StorageLens overview](docs/overview-light.png)
+
+The volume bar is the same idea as System Settings → Storage: one colored
+segment per group, the unscanned remainder in grey, free space as the track.
+Colors belong to the group, not to the size rank, so a category keeps its color
+after a clean reorders the list. The palette is validated for colorblind
+separation and contrast in both light and dark appearance, and every segment is
+named in the legend — color is never the only cue.
+
+
 ## Install
 
 ### For anyone (no developer tools needed)
@@ -125,13 +135,18 @@ Purgeable space is not counted — macOS reclaims that on its own.
 ## Development
 
 ```sh
-make test     # 23 tests; they only touch a temp directory
-make app      # assembles build/StorageLens.app
-make run      # build + launch
-make install  # build + copy to /Applications
-make zip      # build/StorageLens.zip, the release artifact
-make icon     # regenerates Resources/AppIcon.icns
+make test      # 23 tests; they only touch a temp directory
+make app       # assembles build/StorageLens.app
+make run       # build + launch
+make install   # build + copy to /Applications
+make zip       # build/StorageLens.zip, the release artifact
+make icon      # regenerates Resources/AppIcon.icns
+make snapshots # regenerates the README screenshots from preview data
 ```
+
+`make snapshots` runs `StorageLens --snapshot <path> [--dark]`, which renders
+the Overview from a fixture and exits — no window, no real scan — so the
+screenshots in this README stay in step with the code.
 
 ### Layout
 

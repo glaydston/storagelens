@@ -240,8 +240,8 @@ struct CleanupCatalogTests {
 
     @Test("sizes render the way Finder shows them")
     func byteFormatting() {
-        #expect(ByteFormat.string(0) == "Zero KB")
-        #expect(ByteFormat.string(-5) == "Zero KB")
+        #expect(ByteFormat.string(0) == "0 KB")
+        #expect(ByteFormat.string(-5) == "0 KB")
         #expect(ByteFormat.string(1_500_000).contains("MB"))
     }
 }

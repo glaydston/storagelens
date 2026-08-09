@@ -52,6 +52,10 @@ final class ScanModel {
         nonEmptyScans.filter { $0.rule.group == group }
     }
 
+    func total(in group: CleanupRule.Group) -> Int64 {
+        scans.filter { $0.rule.group == group }.reduce(0) { $0 + $1.totalSize }
+    }
+
     func scan(id: String) -> CategoryScan? {
         scans.first { $0.rule.id == id }
     }
@@ -69,6 +73,55 @@ final class ScanModel {
 
     var selectionIncludesPermanent: Bool {
         selectedItems.contains { $0.rule.removal == .permanent }
+    }
+
+    /// A populated model with plausible numbers, for SwiftUI previews and for
+    /// `--snapshot` (which renders the Overview without scanning a real disk).
+    static func preview() -> ScanModel {
+        let model = ScanModel()
+        model.volume = VolumeInfo(
+            name: "Macintosh HD",
+            url: URL(fileURLWithPath: "/"),
+            totalCapacity: 994_662_584_320,
+            availableCapacity: 268_435_456_000
+        )
+
+        let fixtures: [(String, String, CleanupRule.Group, CleanupRule.Risk, [Int64])] = [
+            ("xcode-derived-data", "Xcode Derived Data", .developer, .safe, [24_800_000_000, 9_100_000_000, 3_400_000_000]),
+            ("user-caches", "Application Caches", .system, .safe, [6_200_000_000, 2_800_000_000, 900_000_000]),
+            ("ios-backups", "iOS Device Backups", .large, .review, [18_400_000_000]),
+            ("homebrew-cache", "Homebrew Cache", .packageManagers, .safe, [4_700_000_000, 1_200_000_000]),
+            ("container-com.apple.Safari", "com.apple.Safari", .applications, .safe, [1_900_000_000]),
+            ("trash", "Trash", .system, .review, [3_100_000_000, 640_000_000]),
+            ("npm", "npm Cache", .packageManagers, .safe, [2_300_000_000]),
+            ("user-logs", "Application Logs", .system, .safe, [410_000_000]),
+        ]
+
+        model.scans = fixtures.map { id, title, group, risk, sizes in
+            let root = URL(fileURLWithPath: "/Users/preview/Library/\(id)")
+            let rule = CleanupRule(
+                id: id,
+                title: title,
+                detail: "Preview fixture",
+                group: group,
+                root: root,
+                removal: id == "trash" ? .permanent : .trash,
+                risk: risk
+            )
+            let items = sizes.enumerated().map { index, size in
+                ScannedItem(
+                    url: root.appendingPathComponent("item-\(index)"),
+                    name: "item-\(index)",
+                    size: size,
+                    modified: nil,
+                    isDirectory: true
+                )
+            }
+            return CategoryScan(rule: rule, items: items)
+        }
+        model.ruleCount = model.scans.count
+        model.scannedCount = model.scans.count
+        return model
     }
 
     // MARK: - Scanning

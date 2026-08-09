@@ -1,4 +1,4 @@
-.PHONY: build test app run install uninstall icon zip clean
+.PHONY: build test app run install uninstall icon snapshots zip clean
 
 build:
 	swift build
@@ -25,6 +25,11 @@ uninstall:
 
 icon:
 	swift Scripts/make-icon.swift
+
+# README screenshots, rendered from preview data rather than captured by hand.
+snapshots: build
+	./.build/debug/StorageLens --snapshot docs/overview-light.png
+	./.build/debug/StorageLens --snapshot docs/overview-dark.png --dark
 
 # Release artifact: a zip that keeps the bundle's signature intact.
 zip: app

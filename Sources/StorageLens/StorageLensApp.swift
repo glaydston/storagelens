@@ -5,6 +5,18 @@ import SwiftUI
 struct StorageLensApp: App {
     @State private var model = ScanModel()
 
+    init() {
+        // `StorageLens --snapshot <path.png> [--dark]` renders the Overview
+        // from preview data and exits. Used to regenerate the README shots.
+        let arguments = CommandLine.arguments
+        if let flag = arguments.firstIndex(of: "--snapshot"), flag + 1 < arguments.count {
+            Snapshot.render(
+                to: URL(fileURLWithPath: arguments[flag + 1]),
+                dark: arguments.contains("--dark")
+            )
+        }
+    }
+
     var body: some Scene {
         WindowGroup(AppInfo.name) {
             ContentView()

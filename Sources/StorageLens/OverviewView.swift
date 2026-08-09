@@ -3,13 +3,23 @@ import SwiftUI
 import StorageLensKit
 
 struct OverviewView: View {
+    var body: some View {
+        ScrollView {
+            OverviewContent()
+        }
+        .navigationTitle("Overview")
+    }
+}
+
+/// The Overview's content, outside the scroll view so `ImageRenderer` can lay
+/// it out for `--snapshot` (a ScrollView renders empty).
+struct OverviewContent: View {
     @Environment(ScanModel.self) private var model
 
     var body: some View {
-        ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 if let volume = model.volume {
-                    VolumeCard(volume: volume)
+                    VolumeCard(volume: volume, segments: capacitySegments(for: volume))
                 }
 
                 if model.needsFullDiskAccess {
@@ -35,15 +45,46 @@ struct OverviewView: View {
                 HStack(spacing: 6) {
                     Text(AppInfo.summary)
                     Text("·")
-                    Link("Source", destination: AppInfo.repository)
+                    Text("Source")
+                        .underline()
+                        .onTapGesture { NSWorkspace.shared.open(AppInfo.repository) }
                 }
                 .font(.caption)
                 .foregroundStyle(.tertiary)
             }
             .padding(24)
             .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// One segment per group that found something, then everything else in use,
+    /// then free space — so the bar always sums to the volume's capacity.
+    private func capacitySegments(for volume: VolumeInfo) -> [CapacitySegment] {
+        var segments = CleanupRule.Group.allCases.compactMap { group -> CapacitySegment? in
+            let size = model.total(in: group)
+            guard size > 0 else { return nil }
+            return CapacitySegment(
+                id: group.rawValue,
+                label: group.rawValue,
+                size: size,
+                color: CategoryPalette.color(for: group)
+            )
         }
-        .navigationTitle("Overview")
+
+        let categorized = segments.reduce(Int64(0)) { $0 + $1.size }
+        segments.append(CapacitySegment(
+            id: "other",
+            label: "Other used",
+            size: max(0, volume.usedCapacity - categorized),
+            color: CategoryPalette.otherUsed
+        ))
+        segments.append(CapacitySegment(
+            id: "free",
+            label: "Free",
+            size: volume.availableCapacity,
+            color: CategoryPalette.free,
+            isTrack: true
+        ))
+        return segments
     }
 
     private var summary: some View {
@@ -72,21 +113,24 @@ struct OverviewView: View {
 
 struct VolumeCard: View {
     let volume: VolumeInfo
+    let segments: [CapacitySegment]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
                 Text(volume.name).font(.title2.weight(.semibold))
                 Spacer()
                 Text("\(ByteFormat.string(volume.availableCapacity)) available")
                     .foregroundStyle(.secondary)
             }
-            ProgressView(value: volume.usedFraction)
-                .progressViewStyle(.linear)
-                .tint(volume.usedFraction > 0.9 ? .red : .accentColor)
+
+            CapacityBar(segments: segments)
+
             Text("\(ByteFormat.string(volume.usedCapacity)) used of \(ByteFormat.string(volume.totalCapacity))")
                 .font(.callout)
                 .foregroundStyle(.secondary)
+
+            CapacityLegend(segments: segments)
         }
         .padding(16)
         .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 12))
@@ -131,7 +175,7 @@ struct CategoryBar: View {
             GeometryReader { geometry in
                 let fraction = maximum > 0 ? Double(scan.totalSize) / Double(maximum) : 0
                 RoundedRectangle(cornerRadius: 3)
-                    .fill(scan.rule.risk == .review ? Color.orange.gradient : Color.accentColor.gradient)
+                    .fill(CategoryPalette.color(for: scan.rule.group).gradient)
                     .frame(width: max(2, geometry.size.width * fraction), height: 6)
             }
             .frame(height: 6)
