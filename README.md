@@ -7,7 +7,68 @@ the Trash.
 Everything it removes goes to the Trash. The only exception is the Trash
 itself, which is flagged in the UI and asks for a separate confirmation.
 
-## What it scans
+| | |
+| --- | --- |
+| **Version** | 0.1.0 |
+| **Author** | Glaydston Veloso |
+| **Repository** | https://github.com/glaydston/storagelens |
+| **License** | MIT |
+| **Requires** | macOS 14 (Sonoma) or later, Apple silicon or Intel |
+
+---
+
+## Install
+
+### For anyone (no developer tools needed)
+
+1. Go to the [Releases page](https://github.com/glaydston/storagelens/releases)
+   and download `StorageLens.zip` from the newest release.
+2. Unzip it and drag `StorageLens.app` into your **Applications** folder.
+3. **First launch:** the app is signed ad-hoc rather than notarized, so
+   Gatekeeper refuses to open it by double-click. Right-click the app →
+   **Open** → **Open**. You only do this once. The command-line equivalent:
+
+   ```sh
+   xattr -dr com.apple.quarantine /Applications/StorageLens.app
+   ```
+
+4. Optional: grant **Full Disk Access** (see below) so protected folders can be
+   measured too.
+
+After that it behaves like any other app — Launchpad, Spotlight, Dock.
+
+> Publishing a release requires the repository to be reachable by whoever you
+> are sharing with. While it stays private, only you can download from
+> Releases; see [Publishing](#publishing) for the options.
+
+### For developers
+
+```sh
+git clone git@github.com:glaydston/storagelens.git
+cd storagelens
+make install     # builds and copies to /Applications
+```
+
+Or open `Package.swift` in Xcode and run the `StorageLens` scheme.
+
+## Using it
+
+The app scans on launch — a progress bar sits at the bottom of the sidebar
+while it works, and categories fill in as their sizes land.
+
+1. **Overview** shows the volume gauge, how much was found, how much of it is
+   safe to clean, and the biggest categories. Click a bar to jump to it.
+2. **Select All Safe** ticks every cache and log category. Items in *Needs
+   Review* are never ticked for you.
+3. Open any category to tick individual items. Each row shows its size, when it
+   was last modified, and a button to reveal it in Finder.
+4. The toolbar button on the right shows how much your selection would free.
+   Click it, confirm, and the items go to the Trash.
+
+Nothing is ever removed without a selection and a confirmation. There is no
+auto-clean and no background agent.
+
+### What it scans
 
 | Group | Included |
 | --- | --- |
@@ -17,67 +78,62 @@ itself, which is flagged in the UI and asks for a separate confirmation.
 | Applications | Per-app cache folders inside `~/Library/Containers` |
 | Needs review | iOS device backups, `~/Downloads`, Mail attachments |
 
-Categories are either **safe** (caches an app rebuilds — pre-selectable with
-*Select All Safe*) or **needs review** (real data, never selected for you).
-
-## Requirements
-
-macOS 14 or later, Xcode 16+ / Swift 6 toolchain.
-
-## Build and run
-
-```sh
-make test    # 23 tests, no file system side effects outside a temp dir
-make app     # assembles build/StorageLens.app
-make run     # build + launch
-```
-
-Or open `Package.swift` in Xcode and run the `StorageLens` scheme.
-
-The build script signs the app ad-hoc, which is enough to run locally. For
-distribution to other Macs you'd sign with a Developer ID certificate and
-notarize.
+Categories are either **safe** (caches an app rebuilds — covered by *Select All
+Safe*) or **needs review** (real data, or artifacts that are expensive to
+recreate, like Xcode Archives and their dSYMs).
 
 ### Full Disk Access
 
 The app is deliberately **not sandboxed** — a sandboxed app can't see
-`~/Library/Caches` or the Trash at all. Unprotected locations work right away.
-For protected ones (Mail, some app containers), grant Full Disk Access:
+`~/Library/Caches` or the Trash at all. Most folders work right away. For the
+protected ones (Mail, some app containers), grant access:
 
-> System Settings → Privacy & Security → Full Disk Access → add `StorageLens.app`
+> System Settings → Privacy & Security → Full Disk Access → **+** → select
+> `/Applications/StorageLens.app`, then quit and reopen the app.
 
-The app shows a banner with a button that opens that pane when a scan hits a
-folder it couldn't read.
+The grant is tied to where the app lives, so install it to `/Applications`
+*first* and grant access after. When a scan hits a folder it can't read, the
+Overview shows a banner with a button that opens the right settings pane.
 
 ## Safety model
 
-Deleting files is the whole point of the app, so the destructive path is
-narrow and covered by tests:
+Deleting files is the whole point of the app, so the destructive path is narrow
+and covered by tests:
 
-1. **Allow-list.** Every removal is validated against the roots derived from
-   the rule catalog. A path outside them is refused even if the UI somehow
-   offered it (`SafetyGuard.validate`).
-2. **Contents, never the container.** Rules target the *children* of a root.
-   The root itself is rejected, so `~/Library/Caches` can be emptied but never
+1. **Allow-list.** Every removal is validated against the roots derived from the
+   rule catalog. A path outside them is refused even if the UI somehow offered
+   it (`SafetyGuard.validate`).
+2. **Contents, never the container.** Rules target the *children* of a root. The
+   root itself is rejected, so `~/Library/Caches` can be emptied but never
    removed.
 3. **Symlinks are removed, not followed.** The parent directory is resolved
-   before validation — so `caches/link -> /System` can't smuggle a path past
-   the allow-list — while the final component is left unresolved, so a symlink
-   is deleted as a link and its target is untouched.
-4. **Protected prefixes.** `/System`, `/usr`, `/Applications`, `/private/var/db`
-   and friends are rejected unconditionally, as are paths shallower than five
-   components.
+   before validation — so `caches/link -> /System` can't smuggle a path past the
+   allow-list — while the final component is left unresolved, so a symlink is
+   deleted as a link and its target is untouched.
+4. **Protected prefixes.** `/System`, `/usr`, `/Applications`,
+   `/private/var/db` and friends are rejected unconditionally, as are paths
+   shallower than five components.
 5. **Trash, not `rm`.** `FileManager.trashItem` everywhere except the Trash
    category, which is `.permanent` and confirms separately.
 6. **Nothing happens without a tick.** No auto-clean, no scheduled runs. Sizes
-   are measured; removal waits for an explicit selection and a confirmation
-   dialog.
+   are measured; removal waits for an explicit selection and a confirmation.
 
 Sizes are *allocated size on disk* (`totalFileAllocatedSize`), the same number
 Finder reports, so the freed total matches what the volume gauge moves by.
 Purgeable space is not counted — macOS reclaims that on its own.
 
-## Layout
+## Development
+
+```sh
+make test     # 23 tests; they only touch a temp directory
+make app      # assembles build/StorageLens.app
+make run      # build + launch
+make install  # build + copy to /Applications
+make zip      # build/StorageLens.zip, the release artifact
+make icon     # regenerates Resources/AppIcon.icns
+```
+
+### Layout
 
 ```
 Sources/StorageLensKit/   scanning, rules, safety, removal — no UI, fully tested
@@ -85,7 +141,7 @@ Sources/StorageLensKit/   scanning, rules, safety, removal — no UI, fully test
   DiskScanner.swift       read-only sizing, concurrent per rule
   SafetyGuard.swift       allow-list validation
   Cleaner.swift           removal, behind an injectable FileOperations
-Sources/StorageLens/      SwiftUI app: ScanModel + views
+Sources/StorageLens/      SwiftUI app: AppInfo, ScanModel, views
 Tests/StorageLensKitTests/
 Scripts/build-app.sh      binary -> .app bundle -> ad-hoc signature
 Scripts/make-icon.swift   regenerates Resources/AppIcon.icns
@@ -93,6 +149,42 @@ Scripts/make-icon.swift   regenerates Resources/AppIcon.icns
 
 The logic lives in a library target so it can be tested without launching a UI;
 the executable target is only the app shell and views.
+
+### Adding a category
+
+Append a `CleanupRule` in `CleanupCatalog.rules`. Anything reachable through a
+rule is automatically inside the allow-list, and `.risk = .review` keeps it out
+of *Select All Safe*. The catalog tests assert that identifiers stay unique and
+that every root stays inside the home directory.
+
+## Publishing
+
+`.github/workflows/ci.yml` builds, tests, and bundles the app on every push and
+pull request against `main`.
+
+`.github/workflows/release.yml` fires on a version tag and attaches a
+downloadable zip to a GitHub release:
+
+```sh
+# 1. bump AppInfo.version (the single source of truth the bundle reads)
+# 2. commit, then:
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+The release notes include install instructions, and the artifact keeps its code
+signature because `make zip` uses `ditto` rather than `zip`.
+
+Two things to decide before other people can actually use it:
+
+- **Visibility.** The repository is private, so only you can reach the Releases
+  page. Make it public with `gh repo edit --visibility public` (or share the
+  built app directly).
+- **Signing.** Releases are ad-hoc signed, which means every downloader has to
+  clear the quarantine flag by hand. Signing with a Developer ID certificate and
+  notarizing with `xcrun notarytool` removes that step; it needs a paid Apple
+  Developer account, and the certificate and app-specific password stored as
+  repository secrets.
 
 ## Prior art
 
@@ -104,4 +196,4 @@ finder).
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE). © 2026 Glaydston Veloso.

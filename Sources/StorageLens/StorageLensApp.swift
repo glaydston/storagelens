@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 @main
@@ -5,7 +6,7 @@ struct StorageLensApp: App {
     @State private var model = ScanModel()
 
     var body: some Scene {
-        WindowGroup("StorageLens") {
+        WindowGroup(AppInfo.name) {
             ContentView()
                 .environment(model)
                 .frame(minWidth: 900, minHeight: 560)
@@ -15,10 +16,40 @@ struct StorageLensApp: App {
         }
         .defaultSize(width: 1080, height: 700)
         .commands {
+            CommandGroup(replacing: .appInfo) {
+                Button("About \(AppInfo.name)") { showAboutPanel() }
+            }
             CommandGroup(after: .newItem) {
                 Button("Rescan") { model.rescan() }
                     .keyboardShortcut("r", modifiers: .command)
             }
+            CommandGroup(replacing: .help) {
+                Button("\(AppInfo.name) on GitHub") {
+                    NSWorkspace.shared.open(AppInfo.repository)
+                }
+            }
         }
+    }
+
+    private func showAboutPanel() {
+        let credits = NSMutableAttributedString(
+            string: "Review disk usage and reclaim space from caches, logs and the Trash.\n\n",
+            attributes: [.font: NSFont.systemFont(ofSize: 11)]
+        )
+        credits.append(NSAttributedString(
+            string: AppInfo.repository.absoluteString,
+            attributes: [
+                .font: NSFont.systemFont(ofSize: 11),
+                .link: AppInfo.repository,
+            ]
+        ))
+
+        NSApplication.shared.orderFrontStandardAboutPanel(options: [
+            .applicationName: AppInfo.name,
+            .applicationVersion: AppInfo.version,
+            .credits: credits,
+            .init(rawValue: "Copyright"): AppInfo.copyright,
+        ])
+        NSApplication.shared.activate(ignoringOtherApps: true)
     }
 }

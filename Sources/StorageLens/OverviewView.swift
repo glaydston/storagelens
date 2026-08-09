@@ -30,6 +30,15 @@ struct OverviewView: View {
                             .onTapGesture { model.route = .category(scan.rule.id) }
                     }
                 }
+
+                Divider().padding(.top, 8)
+                HStack(spacing: 6) {
+                    Text(AppInfo.summary)
+                    Text("·")
+                    Link("Source", destination: AppInfo.repository)
+                }
+                .font(.caption)
+                .foregroundStyle(.tertiary)
             }
             .padding(24)
             .frame(maxWidth: .infinity, alignment: .leading)

@@ -9,10 +9,18 @@ set -euo pipefail
 CONFIGURATION="${CONFIGURATION:-release}"
 APP_NAME="StorageLens"
 BUNDLE_ID="com.glaydston.StorageLens"
-VERSION="${VERSION:-0.1.0}"
 MIN_MACOS="14.0"
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# AppInfo.swift is the single source of truth for version and author.
+read_app_info() {
+  sed -n "s/.*static let $1 = \"\(.*\)\"/\1/p" "$ROOT/Sources/StorageLens/AppInfo.swift"
+}
+VERSION="${VERSION:-$(read_app_info version)}"
+AUTHOR="$(read_app_info author)"
+COPYRIGHT="© 2026 $AUTHOR · MIT licensed"
+
 BUILD_DIR="$ROOT/.build/$CONFIGURATION"
 APP_DIR="$ROOT/build/$APP_NAME.app"
 
@@ -46,6 +54,7 @@ cat > "$APP_DIR/Contents/Info.plist" <<PLIST
   <key>CFBundleVersion</key><string>$VERSION</string>
   <key>LSMinimumSystemVersion</key><string>$MIN_MACOS</string>
   <key>LSApplicationCategoryType</key><string>public.app-category.utilities</string>
+  <key>NSHumanReadableCopyright</key><string>$COPYRIGHT</string>
   <key>NSHighResolutionCapable</key><true/>
   <key>NSSupportsAutomaticTermination</key><true/>
   $ICON_ENTRY
@@ -58,4 +67,4 @@ echo "==> Signing (ad-hoc)"
 # grant Full Disk Access themselves for the protected locations.
 codesign --force --sign - --timestamp=none "$APP_DIR"
 
-echo "==> Built $APP_DIR"
+echo "==> Built $APP_DIR ($APP_NAME $VERSION)"

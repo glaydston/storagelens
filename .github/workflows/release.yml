@@ -1,0 +1,45 @@
+name: Release
+
+# Publishes a downloadable StorageLens.zip whenever a v* tag is pushed:
+#   git tag v0.1.0 && git push origin v0.1.0
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Test
+        run: swift test
+
+      - name: Build app bundle
+        run: make zip
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/StorageLens.zip
+          generate_release_notes: true
+          body: |
+            ## Install
+
+            1. Download `StorageLens.zip` below and unzip it.
+            2. Move `StorageLens.app` to `/Applications`.
+            3. The build is signed ad-hoc, not notarized, so Gatekeeper blocks
+               the first launch. Right-click the app → **Open** → **Open**, or run:
+
+               ```sh
+               xattr -dr com.apple.quarantine /Applications/StorageLens.app
+               ```
+
+            4. Optional, for Mail and some app containers: System Settings →
+               Privacy & Security → Full Disk Access → add StorageLens.
+
+            Requires macOS 14 or later.
